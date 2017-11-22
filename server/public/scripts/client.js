@@ -25,7 +25,7 @@ function getShoes() {
                 $newShoeItem.append($deleteShoeButton);
 
                 //create and append the save button
-                var $saveShoeButton = $('<button class="saveButton">Save</button>');
+                var $saveShoeButton = $('<button class="saveButton">Edit</button>');
                 $saveShoeButton.data('id', shoe.id);
                 $newShoeItem.append($saveShoeButton);
 
@@ -67,6 +67,7 @@ function removeShoe(e, complete){
 function editShoe(){
     console.log($(this).data());//this should log {id:7} or whatever the id is
     var shoeIdToSave = $(this).data().id;
+    var updatedShoe = newShoeFields(shoeIdToSave)
     console.log('Save shoe was clicked! The shoe id was', shoeIdToSave);
 
     $.ajax({
@@ -74,11 +75,20 @@ function editShoe(){
         url: '/shoes/' + shoeIdToSave,
 
         //PUT needs to know the data you are editing
-        data: {
-            name: 'Moon Boots'
-        },
+        data: updatedShoe,
         success: function(response){
             getShoes();
         }
     })
+}
+
+function newShoeFields(sampleId){
+    var newShoeName = prompt("What is the new name of this shoe?");
+    var newShoeCost = prompt("And what is the new cost of the shoe?");
+    var newShoeInfo = {
+        id: sampleId,
+        name: newShoeName,
+        cost: newShoeCost
+    };
+    return newShoeInfo
 }

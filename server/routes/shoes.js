@@ -13,7 +13,7 @@ router.get('/', function (req, res) {
         else {
             //We connected to the database!!
             //Now we are going to GET things from the DB
-            client.query('SELECT * FROM SHOES;', function (errorMakingQuery, result) {
+            client.query(`SELECT * FROM SHOES ORDER BY id;`, function (errorMakingQuery, result) {
                 done();
                 if (errorMakingQuery) {
                     //query failed. Did you test it in Postico?
@@ -65,7 +65,7 @@ router.get('/all', function (req, res) {
         else {
             //We connected to the database!!
             //Now we are going to GET things from the DB
-            client.query(`SELECT * FROM shoes`, [req.body.name, req.body.cost], function (errorMakingQuery, result) {
+            client.query(`SELECT * FROM shoes ORDER BY id`, [req.body.name, req.body.cost], function (errorMakingQuery, result) {
                 done();
                 if (errorMakingQuery) {
                     //query failed. Did you test it in Postico?
@@ -93,7 +93,7 @@ router.delete('/:id', function (req, res) {
         else {
             //We connected to the database!!
             //Now we are going to GET things from the DB
-            client.query(`DELETE FROM shoes WHERE id=$1;`, [shoeIdToRemove], function (errorMakingQuery, result) {
+            client.query(`DELETE FROM shoes WHERE id=$1`, [shoeIdToRemove], function (errorMakingQuery, result) {
                     done();
                     if (errorMakingQuery) {
                         //query failed. Did you test it in Postico?
@@ -110,7 +110,11 @@ router.delete('/:id', function (req, res) {
 });;
 
 router.put('/:id', function (req, res) {
+    console.log(req.body);
+    var newShoeName = req.body.name;
+    var newShoeCost = req.body.cost;
     var shoeIdToSave = req.params.id;
+    console.log( shoeIdToSave, newShoeName, newShoeCost);
     //attempt to connect to database
     pool.connect(function (errorConnectingToDatabase, client, done) {
         if (errorConnectingToDatabase) {
@@ -121,7 +125,9 @@ router.put('/:id', function (req, res) {
         else {
             //We connected to the database!!
             //Now we are going to GET things from the DB
-            client.query(`UPDATE shoes SET name = 'Moon Boots' WHERE id=$1;`, [shoeIdToSave], function (errorMakingQuery, result) {
+            client.query(`UPDATE shoes SET name = $1, cost = $2 WHERE id= $3;`, [newShoeName, newShoeCost, shoeIdToSave],
+            //The $'s match by number to the order of the variables in the array, not to the columns of the table 
+            function (errorMakingQuery, result) {
                     done();
                     if (errorMakingQuery) {
                         //query failed. Did you test it in Postico?
