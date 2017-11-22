@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
-var app = express();
 var port = 5000;
 
 var shoes = require('./routes/shoes');
